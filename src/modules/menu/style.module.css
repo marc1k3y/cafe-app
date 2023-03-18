@@ -1,0 +1,10 @@
+.categories {
+  display: flex;
+  gap: 10px;
+}
+
+.category {
+  display: flex;
+  gap: 5px;
+  background-color: lightgray;
+}
