@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import "./App.css";
+import { useEffect, useState } from "react";
 import { RouterService } from "./services/router";
 
 export default function App() {

@@ -1,17 +1,30 @@
 import { useState } from "react";
 
 
-export const CreateCatForm = ({ onSubmit }) => {
-  const [form, setForm] = useState("");
+export const CreateCatForm = ({ setVisible, onSubmit }) => {
+  const [newCat, setNewCat] = useState("");
 
   function submitHandler(e) {
     e.preventDefault();
-    onSubmit(form);
+    onSubmit(newCat);
   };
+
+  function closeModal() {
+    setVisible(false);
+  };
+
   return (
     <form onSubmit={(e) => submitHandler(e)}>
-      <input type="text" value={form} onChange={(e) => setForm(e.target.value)} />
-      <button>create</button>
+      <input
+        type="text"
+        value={newCat}
+        onChange={(e) => setNewCat(e.target.value)} />
+      <button type="submit">
+        create
+      </button>
+      <button onClick={closeModal}>
+        close
+      </button>
     </form>
   );
 }
