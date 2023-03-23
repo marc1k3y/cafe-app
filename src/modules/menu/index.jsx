@@ -1,39 +1,64 @@
 import css from "./style.module.css";
-import { useState } from "react";
-import { categories, positions } from "./mock";
+import { useEffect, useState } from "react";
 import { FormsModal } from "../../elements/modals/Forms";
 import { CreateCatForm } from "../../elements/forms/CreateCat";
 import { CreatePosForm } from "../../elements/forms/CreatePos";
+import { createCategoryService, createPositionService, getCategoriesService, getPositionsService } from "./api";
 
 
 export const MenuModule = () => {
   const [catModal, setCatModal] = useState(false);
   const [posModal, setPosModal] = useState(false);
-  const [currentCatID, setCurrentCatID] = useState(0);
+  const [currentCatID, setCurrentCatID] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [positions, setPositions] = useState(null);
 
   // categories handlers
-  function catHandler(id) {
+  function selectCatHandler(id) {
     setCurrentCatID(id);
   };
 
-  function newCatHandler() {
+  function openCreateCatModalHandler() {
     setCatModal(true);
   };
 
-  function submitNewCatHandler(newCat) {
-    categories.push({ title: newCat, id: categories.length + 1 });
-    setCatModal(false);
+  function submitNewCatHandler(title) {
+    createCategoryService({ title })
+      .then(({ createdCat }) => {
+        setCatModal(false);
+        setCategories((prev) => ([...prev, createdCat]));
+      });
   };
 
+  useEffect(() => {
+    getCategoriesService()
+      .then(({ categories }) => {
+        setCategories(categories);
+        if (categories.length) {
+          setCurrentCatID(categories[0]["id"]);
+        }
+      })
+    //catch
+  }, [])
+
   // positions handlers
-  function newPosHandler() {
+  function openCreatePosHandler() {
     setPosModal(true);
   };
 
   function submitNewPosHandler(newPos) {
-    positions.push(newPos);
-    setPosModal(false);
+    createPositionService(newPos)
+      .then(({ createdPos }) => {
+        setPosModal(false);
+        setPositions((prev) => ([...prev, createdPos]));
+      })
   };
+
+  useEffect(() => {
+    getPositionsService()
+      .then(({ positions }) => setPositions(positions));
+    //catch
+  }, [])
 
   if (catModal) {
     return (
@@ -45,25 +70,25 @@ export const MenuModule = () => {
   if (posModal) {
     return (
       <FormsModal>
-        <CreatePosForm setVisible={setPosModal} onSubmit={submitNewPosHandler} catID={currentCatID} />
+        <CreatePosForm setVisible={setPosModal} onSubmit={submitNewPosHandler} catID={currentCatID} categories={categories} />
       </FormsModal>
     );
   }
   return (
     <div className={css.wrapper}>
       <div className={css.categories}>
-        {categories.map((cat) => (
-          <div key={cat.id} className={css.category} onClick={() => catHandler(cat.id)}>
+        {categories && categories.map((cat) => (
+          <div key={cat.id} className={css.category} onClick={() => selectCatHandler(cat.id)}>
             <div className={css.catTitle}>{cat.title}</div>
             <div className={css.catAmount}>{cat.amount}</div>
           </div>
         ))}
         <div className={css.newCategory}>
-          <button onClick={newCatHandler}>new</button>
+          <button onClick={openCreateCatModalHandler}>new</button>
         </div>
       </div>
       <div className={css.positions}>
-        {positions.filter((pos) => pos.catID === currentCatID).map((pos) => (
+        {positions && positions.filter((pos) => pos.catID === currentCatID).map((pos) => (
           <div key={pos.id} className={css.position}>
             <div className={css.posTitle}>
               {pos.title}
@@ -83,7 +108,10 @@ export const MenuModule = () => {
           </div>
         ))}
         <div className={css.newPos}>
-          <button onClick={newPosHandler}>new</button>
+          {currentCatID &&
+            <button onClick={openCreatePosHandler}>
+              new
+            </button>}
         </div>
       </div>
     </div>

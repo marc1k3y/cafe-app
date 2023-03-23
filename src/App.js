@@ -6,6 +6,11 @@ import { $apiAuth } from "./services/http";
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
 
+  function logout() {
+    localStorage.clear();
+    setIsAuth(false);
+  }
+
   useEffect(() => {
     (async function check() {
       $apiAuth.get("check")
@@ -21,6 +26,9 @@ export default function App() {
   }, [])
 
   return (
-    <RouterService isAuth={isAuth} />
+    <div>
+      {isAuth && <button onClick={logout}>clear</button>}
+      <RouterService isAuth={isAuth} />
+    </div>
   );
 }

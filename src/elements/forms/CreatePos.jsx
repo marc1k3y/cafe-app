@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { categories } from "../../modules/menu/mock";
 
-export const CreatePosForm = ({ onSubmit, setVisible, catID }) => {
+export const CreatePosForm = ({ onSubmit, setVisible, catID, categories }) => {
   const [newPos, setNewPos] = useState({
     id: null,
     catID: catID,
@@ -22,7 +21,7 @@ export const CreatePosForm = ({ onSubmit, setVisible, catID }) => {
   };
 
   function selectCatHandler(id) {
-    setNewPos((prev) => ({ ...prev, catID: parseInt(id) }));
+    setNewPos((prev) => ({ ...prev, catID: id }));
   };
 
   function addOptionHandler(e) {
