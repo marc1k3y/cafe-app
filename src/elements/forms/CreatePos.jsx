@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { categories } from "../../modules/menu/mock";
 
-export const CreatePosForm = ({ onSubmit, setVisible }) => {
+export const CreatePosForm = ({ onSubmit, setVisible, catID }) => {
   const [newPos, setNewPos] = useState({
     id: null,
-    catID: 0,
+    catID: catID,
     title: "Coffee",
     options: [{ id: 213, value: "200ml", price: "300rub" }]
   });
@@ -43,7 +43,7 @@ export const CreatePosForm = ({ onSubmit, setVisible }) => {
           <div>{option.price}</div>
         </div>
       ))}
-      <select onChange={(e) => selectCatHandler(e.target.value)}>
+      <select defaultValue={catID} onChange={(e) => selectCatHandler(e.target.value)}>
         {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
             {cat.title}

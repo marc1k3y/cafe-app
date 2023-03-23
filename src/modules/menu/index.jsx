@@ -45,7 +45,7 @@ export const MenuModule = () => {
   if (posModal) {
     return (
       <FormsModal>
-        <CreatePosForm setVisible={setPosModal} onSubmit={submitNewPosHandler} />
+        <CreatePosForm setVisible={setPosModal} onSubmit={submitNewPosHandler} catID={currentCatID} />
       </FormsModal>
     );
   }
